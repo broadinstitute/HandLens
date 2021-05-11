@@ -215,16 +215,16 @@ const useImage = () => {
 const usePermission = () => {
   const [permission, setPermission] = useState<boolean | null>(null);
 
+  const f = useCallback(async () => {
+    const { status } = await Camera.requestPermissionsAsync();
+
+    setPermission(status === "granted");
+  }, [])
+
   useEffect(() => {
-    const effect = async () => {
-      const {status} = await Camera.requestPermissionsAsync();
-
-      setPermission(status === "granted");
-    }
-
-    effect()
+    f()
       .catch((error) => {
-        console.error(error)
+        console.info(error)
       });
   }, []);
 
@@ -243,7 +243,7 @@ const useScore = (image?: tensorflow.Tensor3D, metric?: Metric) => {
   }, [image, metric]);
 
   useEffect(() => {
-    const debounced = _.debounce(f, 1000 / 60);
+    const debounced = _.debounce(f, 1000 / 15);
 
     debounced();
 

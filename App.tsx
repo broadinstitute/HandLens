@@ -46,7 +46,13 @@ const ASSAYS: Array<Assay> = [
 const METRICS: Array<Metric> = [
   {
     id: "21274555-28fa-4bb3-9be3-443e2e5dbb8d",
-    f: async (image: tensorflow.Tensor3D) => 1.0,
+    f: async (image: tensorflow.Tensor3D) => {
+      const sample = tensorflow.randomUniform([1], 0.0, 1.0);
+
+      const score = await sample.array();
+
+      return Math.floor((score as Array<number>)[0] * 100);
+    },
   },
   {
     id: "34c6c9a5-747d-420d-9700-ce61a22b030a",
@@ -273,7 +279,7 @@ const CameraScreen = () => {
         style={CameraViewStyleSheet.camera}
         type={type}
       />
-      <Text>{`Score: ${score}`}</Text>
+      <Text>{`Score: ${score}%`}</Text>
       <ScoreView/>
     </View>
   )

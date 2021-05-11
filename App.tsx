@@ -8,6 +8,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer, useNavigation, useRoute} from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
 import {Colors, ListItem, Text} from 'react-native-ui-lib';
+import * as _ from "lodash";
 
 type Assay = {
   id: string;
@@ -18,7 +19,7 @@ type Assay = {
 
 type Metric = {
   id: string;
-  f: (image: tensorflow.Tensor3D) => number
+  f: (image: tensorflow.Tensor3D) => Promise<number>
 };
 
 const ASSAYS: Array<Assay> = [
@@ -45,15 +46,15 @@ const ASSAYS: Array<Assay> = [
 const METRICS: Array<Metric> = [
   {
     id: "21274555-28fa-4bb3-9be3-443e2e5dbb8d",
-    f: (image: tensorflow.Tensor3D) => 1.0,
+    f: async (image: tensorflow.Tensor3D) => 1.0,
   },
   {
     id: "34c6c9a5-747d-420d-9700-ce61a22b030a",
-    f: (image: tensorflow.Tensor3D) => 1.0,
+    f: async (image: tensorflow.Tensor3D) => 2.0,
   },
   {
     id: "03114c27-bf26-44ff-879c-ef4be677d09e",
-    f: (image: tensorflow.Tensor3D) => 1.0,
+    f: async (image: tensorflow.Tensor3D) => 3.0,
   }
 ]
 
@@ -186,7 +187,11 @@ const CameraScreen = () => {
 
   const [permissionGranted, setPermissionGranted] = useState<boolean | null>(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
-  const [score, setScore] = useState<number>();
+  const [score, setScore] = useState<number>(0.0);
+  const [assay, setAssay] = useState<Assay>();
+  const [metric, setMetric] = useState<Metric>();
+  const [images, setImages] = useState<IterableIterator<tensorflow.Tensor3D>>();
+  const [image, setImage] = useState<tensorflow.Tensor3D>();
 
   useEffect(() => {
     const effect = async () => {
@@ -195,18 +200,65 @@ const CameraScreen = () => {
       setPermissionGranted(status === "granted");
     }
 
-    effect();
+    effect()
+      .catch((error) => {
+        console.error(error)
+      });
   }, []);
 
   useEffect(() => {
-    const options = { title: (route.params as Assay).name };
+    setAssay(route.params as Assay);
 
-    navigation.setOptions(options)
-  })
+    if (!assay) return;
+
+    const options = { title: assay.name };
+
+    navigation.setOptions(options);
+
+    setMetric(_.find(METRICS, (metric: Metric) => metric.id === assay.metric));
+  });
+
+  /*
+   * useCurrentFrame
+   */
+  useEffect(() => {
+    if (!images) return;
+
+    const effect = async () => {
+      const image = await images.next().value;
+
+      setImage(image);
+    }
+
+    effect()
+      .catch((error) => {
+        console.error(error)
+      });
+  }, [images]);
+
+  /*
+   * Score image
+   */
+  useEffect(() => {
+    if (!image || !metric) return;
+
+    const effect = async () => {
+      const y = await metric.f(image);
+
+      setScore(y);
+    }
+
+    effect()
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [image, metric]);
 
   if (!permissionGranted) return <View/>
 
-  const onReady = (images: IterableIterator<tensorflow.Tensor3D>) => {};
+  const onReady = (images: IterableIterator<tensorflow.Tensor3D>) => {
+    setImages(images);
+  };
 
   return (
     <View style={CameraViewStyleSheet.view}>
@@ -221,6 +273,7 @@ const CameraScreen = () => {
         style={CameraViewStyleSheet.camera}
         type={type}
       />
+      <Text>{`Score: ${score}`}</Text>
       <ScoreView/>
     </View>
   )

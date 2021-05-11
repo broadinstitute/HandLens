@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {ReactNode, useCallback, useEffect, useState} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import * as tensorflow from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-react-native';
@@ -155,7 +155,11 @@ const CameraViewStyleSheet = StyleSheet.create({
 });
 
 const CircleViewStyleSheet = StyleSheet.create({
+  text: {},
   view: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: "red",
     borderRadius: 64 / 2,
     height: 64,
@@ -174,14 +178,18 @@ const ScoreViewStyleSheet = StyleSheet.create({
   }
 });
 
-const CircleView = () => {
-  return <View style={CircleViewStyleSheet.view} />;
+const CircleView = ({ score }: { score: number }) => {
+  return (
+    <View style={CircleViewStyleSheet.view}>
+      <Text style={CircleViewStyleSheet.text}>{Math.floor(score * 100)}</Text>
+    </View>
+  );
 }
 
-const ScoreView = () => {
+const ScoreView = ({ score }: { score: number }) => {
   return (
     <View style={ScoreViewStyleSheet.view}>
-      <CircleView/>
+      <CircleView score={score} />
     </View>
   )
 }
@@ -243,7 +251,7 @@ const useScore = (image?: tensorflow.Tensor3D, metric?: Metric) => {
   }, [image, metric]);
 
   useEffect(() => {
-    const debounced = _.debounce(f, 1000 / 15);
+    const debounced = _.debounce(f, 1000);
 
     debounced();
 
@@ -294,8 +302,7 @@ const CameraScreen = () => {
         style={CameraViewStyleSheet.camera}
         type={Camera.Constants.Type.back}
       />
-      <Text>{`Score: ${Math.floor(score * 100)}%`}</Text>
-      <ScoreView/>
+      <ScoreView score={score}/>
     </View>
   )
 }

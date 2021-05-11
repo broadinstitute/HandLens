@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import * as tensorflow from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-react-native';
@@ -186,6 +186,54 @@ const ScoreView = () => {
   )
 }
 
+const useImage = () => {
+  const [image, setImage] = useState<tensorflow.Tensor3D>();
+  const [images, setImages] = useState<IterableIterator<tensorflow.Tensor3D>>();
+
+  useEffect(() => {
+    if (!images) return;
+
+    const effect = async () => {
+      const image = await images.next().value;
+
+      setImage(image);
+    }
+
+    effect()
+      .catch((error) => {
+        console.error(error)
+      });
+  }, [images]);
+
+  const onReady = (images: IterableIterator<tensorflow.Tensor3D>) => {
+    setImages(images);
+  };
+
+  return { image, onReady };
+}
+
+const useScore = (image?: tensorflow.Tensor3D, metric?: Metric) => {
+  const [score, setScore] = useState<number>(0.0);
+
+  const f = useCallback(async () => {
+    if (!image || !metric) return;
+
+    const y = await metric.f(image);
+
+    setScore(y);
+  }, [image, metric]);
+
+  useEffect(() => {
+    const debounced = _.debounce(f, 1000);
+
+    debounced();
+
+    return () => debounced.cancel();
+  });
+
+  return score;
+}
+
 const CameraScreen = () => {
   const navigation = useNavigation();
 
@@ -193,11 +241,8 @@ const CameraScreen = () => {
 
   const [permissionGranted, setPermissionGranted] = useState<boolean | null>(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
-  const [score, setScore] = useState<number>(0.0);
   const [assay, setAssay] = useState<Assay>();
   const [metric, setMetric] = useState<Metric>();
-  const [images, setImages] = useState<IterableIterator<tensorflow.Tensor3D>>();
-  const [image, setImage] = useState<tensorflow.Tensor3D>();
 
   useEffect(() => {
     const effect = async () => {
@@ -224,47 +269,11 @@ const CameraScreen = () => {
     setMetric(_.find(METRICS, (metric: Metric) => metric.id === assay.metric));
   });
 
-  /*
-   * useCurrentFrame
-   */
-  useEffect(() => {
-    if (!images) return;
+  const { image, onReady } = useImage();
 
-    const effect = async () => {
-      const image = await images.next().value;
-
-      setImage(image);
-    }
-
-    effect()
-      .catch((error) => {
-        console.error(error)
-      });
-  }, [images]);
-
-  /*
-   * Score image
-   */
-  useEffect(() => {
-    if (!image || !metric) return;
-
-    const effect = async () => {
-      const y = await metric.f(image);
-
-      setScore(y);
-    }
-
-    effect()
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [image, metric]);
+  const score = useScore(image, metric);
 
   if (!permissionGranted) return <View/>
-
-  const onReady = (images: IterableIterator<tensorflow.Tensor3D>) => {
-    setImages(images);
-  };
 
   return (
     <View style={CameraViewStyleSheet.view}>

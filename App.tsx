@@ -51,16 +51,16 @@ const METRICS: Array<Metric> = [
 
       const score = await sample.array();
 
-      return Math.floor((score as Array<number>)[0] * 100);
+      return (score as Array<number>)[0]
     },
   },
   {
     id: "34c6c9a5-747d-420d-9700-ce61a22b030a",
-    f: async (image: tensorflow.Tensor3D) => 2.0,
+    f: async (image: tensorflow.Tensor3D) => 0.5,
   },
   {
     id: "03114c27-bf26-44ff-879c-ef4be677d09e",
-    f: async (image: tensorflow.Tensor3D) => 3.0,
+    f: async (image: tensorflow.Tensor3D) => 0.5,
   }
 ]
 
@@ -212,6 +212,25 @@ const useImage = () => {
   return { image, onReady };
 }
 
+const usePermission = () => {
+  const [permission, setPermission] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const effect = async () => {
+      const {status} = await Camera.requestPermissionsAsync();
+
+      setPermission(status === "granted");
+    }
+
+    effect()
+      .catch((error) => {
+        console.error(error)
+      });
+  }, []);
+
+  return permission;
+}
+
 const useScore = (image?: tensorflow.Tensor3D, metric?: Metric) => {
   const [score, setScore] = useState<number>(0.0);
 
@@ -224,7 +243,7 @@ const useScore = (image?: tensorflow.Tensor3D, metric?: Metric) => {
   }, [image, metric]);
 
   useEffect(() => {
-    const debounced = _.debounce(f, 1000);
+    const debounced = _.debounce(f, 1000 / 60);
 
     debounced();
 
@@ -235,27 +254,18 @@ const useScore = (image?: tensorflow.Tensor3D, metric?: Metric) => {
 }
 
 const CameraScreen = () => {
-  const navigation = useNavigation();
-
-  const route = useRoute();
-
-  const [permissionGranted, setPermissionGranted] = useState<boolean | null>(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
   const [assay, setAssay] = useState<Assay>();
   const [metric, setMetric] = useState<Metric>();
 
-  useEffect(() => {
-    const effect = async () => {
-      const {status} = await Camera.requestPermissionsAsync();
+  const { image, onReady } = useImage();
 
-      setPermissionGranted(status === "granted");
-    }
+  const navigation = useNavigation();
 
-    effect()
-      .catch((error) => {
-        console.error(error)
-      });
-  }, []);
+  const permission = usePermission();
+
+  const route = useRoute();
+
+  const score = useScore(image, metric);
 
   useEffect(() => {
     setAssay(route.params as Assay);
@@ -269,11 +279,7 @@ const CameraScreen = () => {
     setMetric(_.find(METRICS, (metric: Metric) => metric.id === assay.metric));
   });
 
-  const { image, onReady } = useImage();
-
-  const score = useScore(image, metric);
-
-  if (!permissionGranted) return <View/>
+  if (!permission) return <View/>
 
   return (
     <View style={CameraViewStyleSheet.view}>
@@ -286,9 +292,9 @@ const CameraScreen = () => {
         resizeHeight={224}
         resizeWidth={224}
         style={CameraViewStyleSheet.camera}
-        type={type}
+        type={Camera.Constants.Type.back}
       />
-      <Text>{`Score: ${score}%`}</Text>
+      <Text>{`Score: ${Math.floor(score * 100)}%`}</Text>
       <ScoreView/>
     </View>
   )

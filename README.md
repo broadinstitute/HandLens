@@ -57,7 +57,7 @@ HandLens metrics have the following signature:
 (image: tensorflow.Tensor3D) => tensorflow.Scalar
 ```
 
-**image** is a basic TensorFlow.js tensor so writing new metrics should be a 
+**image** is a basic TensorFlow.js tensor so writing new metrics should be an 
 unexceptional process for anyone familiar with writing *n*-dimmensional array 
 algorithms using software libraries like NumPy, PyTorch, or TensorFlow. The
 [TensorFlow.js API](https://js.tensorflow.org/api/latest/) website outlines the 

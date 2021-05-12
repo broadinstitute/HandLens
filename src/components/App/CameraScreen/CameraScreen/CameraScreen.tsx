@@ -1,17 +1,17 @@
 import React, {useEffect, useState} from "react";
-import {Assay} from "./Assay";
-import {Metric} from "./Metric";
-import {useImage} from "./useImage";
+import {Assay} from "../../../../types/Assay";
+import {Metric} from "../../../../types/Metric";
+import {useImage} from "../../../../hooks/useImage";
 import {useNavigation, useRoute} from "@react-navigation/native";
-import {usePermission} from "./usePermission";
-import {useScore} from "./useScore";
+import {usePermission} from "../../../../hooks/usePermission";
+import {useScore} from "../../../../hooks/useScore";
 import * as _ from "lodash";
-import {METRICS} from "./Metrics";
+import {METRICS} from "../../../../Metrics";
 import {View} from "react-native";
 import {CameraViewStyleSheet} from "./CameraViewStyleSheet";
-import {TensorCamera} from "./TensorCamera";
+import {TensorCamera} from "../TensorCamera";
 import {Camera} from "expo-camera";
-import {ScoreView} from "./ScoreView";
+import {ScoreView} from "../ScoreView";
 
 export const CameraScreen = () => {
   const [assay, setAssay] = useState<Assay>();

@@ -1,4 +1,4 @@
-import {Metric} from "./Metric";
+import {Metric} from "./types/Metric";
 import * as tensorflow from "@tensorflow/tfjs";
 
 export const METRICS: Array<Metric> = [

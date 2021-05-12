@@ -1,10 +1,10 @@
 import {useNavigation} from "@react-navigation/native";
-import {Assay} from "./Assay";
+import {Assay} from "../../../types/Assay";
 import * as Animatable from "react-native-animatable";
 import {ListItem, Text} from "react-native-ui-lib";
 import {AssayListScreenStyleSheet} from "./AssayListScreenStyleSheet";
 import {FlatList} from "react-native";
-import {ASSAYS} from "./Assays";
+import {ASSAYS} from "../../../Assays";
 import React from "react";
 
 export const AssayListScreen = () => {

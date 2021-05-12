@@ -3,8 +3,8 @@ import * as tensorflow from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
-import {CameraScreen} from "./src/CameraScreen";
-import {AssayListScreen} from "./src/AssayListScreen";
+import {CameraScreen} from "../CameraScreen";
+import {AssayListScreen} from "../AssayListScreen";
 
 const Stack = createStackNavigator();
 

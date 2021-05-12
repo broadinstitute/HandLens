@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState} from "react";
 import * as tensorflow from "@tensorflow/tfjs";
-import {Metric} from "./Metric";
+import {Metric} from "../types/Metric";
 import * as _ from "lodash";
 
 

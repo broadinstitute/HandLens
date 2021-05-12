@@ -1,4 +1,4 @@
-import {Assay} from "./Assay";
+import {Assay} from "./types/Assay";
 
 export const ASSAYS: Array<Assay> = [
   {

@@ -54,7 +54,7 @@ Writing a new HandLens metric
 HandLens metrics have the following signature:
 
 ```typescript
-(image: tensorflow.Tensor3D) => tensorflow.Scalar
+(image: tensorflow.Tensor3D) => Promise<number>
 ```
 
 **image** is a basic TensorFlow.js tensor so writing new metrics should be an 
@@ -72,7 +72,7 @@ import * as tensorflow from "@tensorflow/tfjs";
 /*
  *  returns the means intensity of an image
  */
-export const meanIntensity = async (image: tensorflow.Tensor3D) => {
-  return tensorflow.mean(image);
+export const meanIntensity = async (image: tensorflow.Tensor3D): Promise<number> => {
+  return await tensorflow.mean(image).array();
 }
 ```

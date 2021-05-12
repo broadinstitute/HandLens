@@ -72,7 +72,7 @@ import * as tensorflow from "@tensorflow/tfjs";
 /*
  *  returns the means intensity of an image
  */
-export const meanIntensity = async (image: tensorflow.Tensor3D): Promise<number> => {
+export const meanIntensity = async (image: tensorflow.Tensor3D) => {
   return await tensorflow.mean(image).array();
 }
 ```

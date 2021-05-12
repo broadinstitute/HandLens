@@ -4,7 +4,7 @@ import * as Animatable from "react-native-animatable";
 import {ListItem, Text} from "react-native-ui-lib";
 import {AssayListScreenStyleSheet} from "./AssayListScreenStyleSheet";
 import {FlatList} from "react-native";
-import {ASSAYS} from "../../../Assays";
+import data from "../../../assays.json";
 import React from "react";
 
 export const AssayListScreen = () => {
@@ -28,7 +28,7 @@ export const AssayListScreen = () => {
 
   return (
     <FlatList
-      data={ASSAYS}
+      data={data}
       keyExtractor={(item: Assay) => item.id}
       renderItem={renderItem}
     />

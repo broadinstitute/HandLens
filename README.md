@@ -69,6 +69,9 @@ Here’s a simple example metric that outlines basic TensorFlow.js functionality
 ```typescript
 import * as tensorflow from "@tensorflow/tfjs";
 
+/*
+ *  returns the means intensity of an image
+ */
 export const meanIntensity = async (image: tensorflow.Tensor3D) => {
   return tensorflow.mean(image);
 }

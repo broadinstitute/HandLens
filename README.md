@@ -21,8 +21,7 @@ Adding a new assay to HandLens is a simple three-step process:
 [Online UUID Generator](https://www.uuidgenerator.net) to generate new UUIDs 
 for **id** and **metric**.*
     
-2.  Create a new module for your assay in the `src/metrics` directory. Your 
-    module **must** use the following structure:
+2.  Create a new module for your assay in `src/metrics` with the structure:
 
 ```typescript
 import * as tensorflow from "@tensorflow/tfjs";

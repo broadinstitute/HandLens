@@ -1,8 +1,8 @@
 HandLens
 ========
 
-Adding new assays to HandLens
------------------------------
+Adding a new assay to HandLens
+------------------------------
 
 Adding a new assay to HandLens is a simple three-step process:
 

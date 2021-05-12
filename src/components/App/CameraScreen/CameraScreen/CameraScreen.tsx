@@ -6,12 +6,12 @@ import {useNavigation, useRoute} from "@react-navigation/native";
 import {usePermission} from "../../../../hooks/usePermission";
 import {useScore} from "../../../../hooks/useScore";
 import * as _ from "lodash";
-import {METRICS} from "../../../../Metrics";
 import {View} from "react-native";
 import {CameraViewStyleSheet} from "./CameraViewStyleSheet";
 import {TensorCamera} from "../TensorCamera";
 import {Camera} from "expo-camera";
 import {ScoreView} from "../ScoreView";
+import {METRICS} from "../../../../metrics";
 
 export const CameraScreen = () => {
   const [assay, setAssay] = useState<Assay>();

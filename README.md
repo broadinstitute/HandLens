@@ -47,3 +47,29 @@ export const METRICS: Array<Metric> = [
 ```
 
 ***id** corresponds to the **metric** UUID added to `src/assays.json`.*
+
+Writing a new HandLens metric
+-----------------------------
+
+HandLens metrics have the following signature:
+
+```typescript
+(image: tensorflow.Tensor3D) => tensorflow.Scalar
+```
+
+**image** is a basic TensorFlow.js tensor so writing new metrics should be a 
+unexceptional process for anyone familiar with writing *n*-dimmensional array 
+algorithms using software libraries like NumPy, PyTorch, or TensorFlow. The
+[TensorFlow.js API](https://js.tensorflow.org/api/latest/) website outlines the 
+operations provided by TensorFlow.js and, consequently, made available to 
+HandLens
+
+Here’s a simple example metric that outlines basic TensorFlow.js functionality:
+
+```typescript
+import * as tensorflow from "@tensorflow/tfjs";
+
+export const meanIntensity = async (image: tensorflow.Tensor3D) => {
+  return tensorflow.mean(image);
+}
+```

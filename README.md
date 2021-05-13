@@ -89,7 +89,6 @@ import * as tensorflow from "@tensorflow/tfjs";
 /*
  *  returns the probability the object is a beagle
  */
-
 import * as tensorflow from "@tensorflow/tfjs";
 
 const IMAGENET_BEAGLE_INDEX = 162;

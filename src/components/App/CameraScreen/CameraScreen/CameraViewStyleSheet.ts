@@ -2,7 +2,7 @@ import {StyleSheet} from "react-native";
 
 export const CameraViewStyleSheet = StyleSheet.create({
   camera: {
-    flex: 1,
+    ...StyleSheet.absoluteFillObject
   },
   view: {
     display: "flex",

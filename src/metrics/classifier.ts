@@ -1,5 +1,7 @@
 import * as tensorflow from "@tensorflow/tfjs";
 
+const BEAGLE_INDEX = 162;
+
 const SHAPE = [1, 224, 224, 3];
 
 const ORIGIN = "https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v2_100_224/classification/3/default/1";
@@ -15,5 +17,5 @@ export const classifier = async (image: tensorflow.Tensor3D) => {
     return prediction.flatten();
   });
 
-  return (await prediction.array())[162]
+  return (await prediction.array())[BEAGLE_INDEX]
 }

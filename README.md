@@ -1,6 +1,10 @@
 HandLens
 ========
 
+HandLens is a free and open-source Android and iOS application for measuring 
+image features from your device’s camera. It was written to aid biologists 
+in quickly evaluating assay diagnostics.
+
 Adding a new assay to HandLens
 ------------------------------
 
